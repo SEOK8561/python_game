@@ -13,6 +13,8 @@ tileY = 8
 displayX = tileX*pixelX
 displayY = tileY*pixelY
 
+iot_Count = 0
+
 iot_caption = "iotsokoban"
 pygame.display.set_caption(iot_caption)
 DISPLAYSURF = pygame.display.set_mode((displayX, displayY), 0, 32)
@@ -34,9 +36,9 @@ iot_Stage = [
 	[MutableString("##########"),
 	MutableString("#        #"),
 	MutableString("######## #"),
+	MutableString("# ..#### #"),
 	MutableString("#   #### #"),
-	MutableString("#   #### #"),
-	MutableString("# .B@ #  #"),
+	MutableString("# BB@ #  #"),
 	MutableString("#        #"),
 	MutableString("##########")],
 	
@@ -50,7 +52,7 @@ iot_Stage = [
 	MutableString("##########")]
 	]
 stage_Num = 0
-iot_caption = "iotsokoban [stage:%d]" % (stage_Num+1)
+iot_caption = "iotsokoban [stage:%d][Count:%d]" % (stage_Num+1, iot_Count)
 pygame.display.set_caption(iot_caption)
 iot_Map = []
 for iStage in range(tileY):
@@ -114,6 +116,11 @@ while True: # the main game loop
 			elif event.key == pygame.K_LEFT:
 				ImgMan = ImgManL
 				manx = manx - 1
+			elif event.key == pygame.K_r:
+				iot_Map = []
+				for iStage in range(tileY):
+					iot_Map.append(iot_Stage[stage_Num][iStage][:])
+				break
 			else: 
 				continue
 #if ' ' == iot_Map[many][manx]or'.' == iot_Map[many][manx]:
@@ -124,11 +131,14 @@ while True: # the main game loop
 					else:
 						many = TempY
 						manx = TempX
+						continue
 				if '.' == iot_Stage[stage_Num][TempY][TempX]:
 					iot_Map[TempY][TempX] = '.'
 				else:
 					iot_Map[TempY][TempX] = ' '
 				iot_Map[many][manx] = '@'
+				iot_Count = iot_Count + 1
+				print iot_Count
 			else:
 				many = TempY
 				manx = TempX
