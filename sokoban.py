@@ -4,10 +4,18 @@ import time
 from UserString import MutableString
 
 pygame.init()
+pixelX = 60
+pixelY = 60
+
+tileX = 10
+tileY = 8
+
+displayX = tileX*pixelX
+displayY = tileY*pixelY
 
 iot_caption = "iotsokoban"
 pygame.display.set_caption(iot_caption)
-DISPLAYSURF = pygame.display.set_mode((600, 480), 0, 32)
+DISPLAYSURF = pygame.display.set_mode((displayX, displayY), 0, 32)
 
 WHITE = (255, 255, 255)
 ImgWall = pygame.image.load('iot_wall.png')
@@ -45,26 +53,26 @@ stage_Num = 0
 iot_caption = "iotsokoban [stage:%d]" % (stage_Num+1)
 pygame.display.set_caption(iot_caption)
 iot_Map = []
-for iStage in range(8):
+for iStage in range(tileY):
 	iot_Map.append(iot_Stage[stage_Num][iStage][:])
 
 while True: # the main game loop
 	stage_End = True
 	DISPLAYSURF.fill(WHITE)
-	for ix in range(10):
-		for iy in range(8):
+	for ix in range(tileX):
+		for iy in range(tileY):
 			if '#' == iot_Map[iy][ix]:	
-				DISPLAYSURF.blit(ImgWall, (ix*60, iy*60))
+				DISPLAYSURF.blit(ImgWall, (ix*pixelX, iy*pixelY))
 			elif '@' == iot_Map[iy][ix]:
-				DISPLAYSURF.blit(ImgMan, (ix*60, iy*60))
+				DISPLAYSURF.blit(ImgMan, (ix*pixelX, iy*pixelY))
 				manx = ix
 				many = iy
 			elif 'B' == iot_Map[iy][ix]:	
-				DISPLAYSURF.blit(ImgBox, (ix*60, iy*60))
+				DISPLAYSURF.blit(ImgBox, (ix*pixelX, iy*pixelY))
 				if '.' != iot_Stage[stage_Num][iy][ix]:
 					stage_End = False
 			elif '.' == iot_Map[iy][ix]:	
-				DISPLAYSURF.blit(ImgDot, (ix*60, iy*60))
+				DISPLAYSURF.blit(ImgDot, (ix*pixelX, iy*pixelY))
 	pygame.display.update()
 
 	if True == stage_End:		
@@ -82,8 +90,12 @@ while True: # the main game loop
 			continue
 		stage_Num = stage_Num + 1
 		iot_Map = []
-		for iStage in range(8):
+		for iStage in range(tileY):
 			iot_Map.append(iot_Stage[stage_Num][iStage][:])
+		iot_caption = "iotsokoban [stage:%d]" % (stage_Num+1)
+		pygame.display.set_caption(iot_caption)
+		continue
+		
 #raw_input()		
 
 	for event in pygame.event.get():
