@@ -58,9 +58,13 @@ iot_Map = []
 for iStage in range(tileY):
 	iot_Map.append(iot_Stage[stage_Num][iStage][:])
 
+def IotDraw():
+	print "IotDraw"
+
 while True: # the main game loop
 	stage_End = True
 	DISPLAYSURF.fill(WHITE)
+	pygame.display.set_caption(iot_caption)
 	for ix in range(tileX):
 		for iy in range(tileY):
 			if '#' == iot_Map[iy][ix]:	
@@ -94,8 +98,8 @@ while True: # the main game loop
 		iot_Map = []
 		for iStage in range(tileY):
 			iot_Map.append(iot_Stage[stage_Num][iStage][:])
-		iot_caption = "iotsokoban [stage:%d]" % (stage_Num+1)
-		pygame.display.set_caption(iot_caption)
+		iot_Count = 0
+		iot_caption = "iotsokoban [stage:%d][Count:%d]" % (stage_Num+1, iot_Count)
 		continue
 		
 #raw_input()		
@@ -105,6 +109,7 @@ while True: # the main game loop
 			TempX = manx
 			TempY = many
 			if event.key == pygame.K_DOWN:
+				IotDraw()
 				ImgMan = ImgManF
 				many = many + 1
 			elif event.key == pygame.K_UP:
@@ -118,6 +123,8 @@ while True: # the main game loop
 				manx = manx - 1
 			elif event.key == pygame.K_r:
 				iot_Map = []
+				iot_Count = 0
+				iot_caption = "iotsokoban [stage:%d][Count:%d]" % (stage_Num+1, iot_Count)
 				for iStage in range(tileY):
 					iot_Map.append(iot_Stage[stage_Num][iStage][:])
 				break
@@ -138,7 +145,7 @@ while True: # the main game loop
 					iot_Map[TempY][TempX] = ' '
 				iot_Map[many][manx] = '@'
 				iot_Count = iot_Count + 1
-				print iot_Count
+				iot_caption = "iotsokoban [stage:%d][Count:%d]" % (stage_Num+1, iot_Count)
 			else:
 				many = TempY
 				manx = TempX
