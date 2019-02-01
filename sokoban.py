@@ -59,12 +59,21 @@ for iStage in range(tileY):
 	iot_Map.append(iot_Stage[stage_Num][iStage][:])
 
 def IotDraw():
-	print "IotDraw"
+	global tileX
+	global tileY
+	global iot_Map
+	global iot_Stage
+	global stage_Num
+	global stage_End
+	global ImgWall
+	global ImgMan
+	global ImgBox
+	global ImgDot
+	global piexlX
+	global piexlY
+	global manx
+	global many
 
-while True: # the main game loop
-	stage_End = True
-	DISPLAYSURF.fill(WHITE)
-	pygame.display.set_caption(iot_caption)
 	for ix in range(tileX):
 		for iy in range(tileY):
 			if '#' == iot_Map[iy][ix]:	
@@ -79,6 +88,13 @@ while True: # the main game loop
 					stage_End = False
 			elif '.' == iot_Map[iy][ix]:	
 				DISPLAYSURF.blit(ImgDot, (ix*pixelX, iy*pixelY))
+	
+
+while True: # the main game loop
+	stage_End = True
+	DISPLAYSURF.fill(WHITE)
+	pygame.display.set_caption(iot_caption)
+	IotDraw()
 	pygame.display.update()
 
 	if True == stage_End:		
