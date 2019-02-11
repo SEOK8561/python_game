@@ -3,77 +3,83 @@ import sys
 import time
 from UserString import MutableString
 
-pygame.init()
-pixelX = 60
-pixelY = 60
+########################################################## 
+###################### Global Value ###################### 
+pixelX		= 60
+pixelY		= 60
+tileX		= 10
+tileY		= 8
+displayX	= tileX*pixelX
+displayY	= tileY*pixelY
+iot_Count	= 0
+WHITE		= (255, 255, 255)
+ImgWall		= pygame.image.load('iot_wall.png')
+ImgManF		= pygame.image.load('man_front.png')
+ImgManB		= pygame.image.load('man_back.png')
+ImgManR		= pygame.image.load('man_right.png')
+ImgManL		= pygame.image.load('man_left.png')
+ImgDot		= pygame.image.load('dot.png')
+ImgBox		= pygame.image.load('box.png')
+ImgClear	= pygame.image.load('stage_clear.png')
+ImgMan		= ImgManF
+manx		= 0
+many		= 0
+stage_Num	= 0
+iot_Map		= []
+DISPLAYSURF = None
+iot_Stage	= [	[
+				MutableString("##########"),
+				MutableString("#        #"),
+				MutableString("#        #"),
+				MutableString("# .B@    #"),
+				MutableString("#        #"),
+				MutableString("#        #"),
+				MutableString("#        #"),
+				MutableString("##########")
+				],
+				[
+				MutableString("##########"),
+				MutableString("#        #"),
+				MutableString("#   .    #"),
+				MutableString("#   B    #"),
+				MutableString("#   @    #"),
+				MutableString("#        #"),
+				MutableString("#        #"),
+				MutableString("##########")
+				],
+				[
+				MutableString("##########"),
+				MutableString("#      @ #"),
+				MutableString("#      B #"),
+				MutableString("#      . #"),
+				MutableString("#        #"),
+				MutableString("#        #"),
+				MutableString("#        #"),
+				MutableString("##########")
+				]
+]
+###################### Global Value ###################### 
+########################################################## 
 
-tileX = 10
-tileY = 8
+########################################################## 
+###################### Function     ###################### 
+def	IotLoadMap():
+	global iot_Map
 
-displayX = tileX*pixelX
-displayY = tileY*pixelY
+	for iStage in range(tileY):
+		iot_Map.append(iot_Stage[stage_Num][iStage][:])
 
-iot_Count = 0
 
-iot_caption = "iotsokoban"
-pygame.display.set_caption(iot_caption)
-DISPLAYSURF = pygame.display.set_mode((displayX, displayY), 0, 32)
-
-WHITE = (255, 255, 255)
-ImgWall = pygame.image.load('iot_wall.png')
-ImgManF = pygame.image.load('man_front.png')
-ImgManB = pygame.image.load('man_back.png')
-ImgManR = pygame.image.load('man_right.png')
-ImgManL = pygame.image.load('man_left.png')
-ImgDot = pygame.image.load('dot.png')
-ImgBox = pygame.image.load('box.png')
-ImgClear = pygame.image.load('stage_clear.png')
-ImgMan = ImgManF
-manx = 0
-many = 0
-
-iot_Stage = [
-	[MutableString("##########"),
-	MutableString("#        #"),
-	MutableString("######## #"),
-	MutableString("# ..#### #"),
-	MutableString("#   #### #"),
-	MutableString("# BB@ #  #"),
-	MutableString("#        #"),
-	MutableString("##########")],
-	
-	[MutableString("##########"),
-	MutableString("#      @ #"),
-	MutableString("#######B #"),
-	MutableString("##   # . #"),
-	MutableString("#  #   ###"),
-	MutableString("# ########"),
-	MutableString("#    #   #"),
-	MutableString("##########")]
-	]
-stage_Num = 0
-iot_caption = "iotsokoban [stage:%d][Count:%d]" % (stage_Num+1, iot_Count)
-pygame.display.set_caption(iot_caption)
-iot_Map = []
-for iStage in range(tileY):
-	iot_Map.append(iot_Stage[stage_Num][iStage][:])
+def IotSetCaption(caption):
+	pygame.display.set_caption(caption)
 
 def IotDraw():
-	global tileX
-	global tileY
-	global iot_Map
-	global iot_Stage
-	global stage_Num
 	global stage_End
-	global ImgWall
-	global ImgMan
-	global ImgBox
-	global ImgDot
-	global piexlX
-	global piexlY
 	global manx
 	global many
 
+	stage_End = True
+	DISPLAYSURF.fill(WHITE)
 	for ix in range(tileX):
 		for iy in range(tileY):
 			if '#' == iot_Map[iy][ix]:	
@@ -88,12 +94,18 @@ def IotDraw():
 					stage_End = False
 			elif '.' == iot_Map[iy][ix]:	
 				DISPLAYSURF.blit(ImgDot, (ix*pixelX, iy*pixelY))
-	
 
-while True: # the main game loop
-	stage_End = True
-	DISPLAYSURF.fill(WHITE)
-	pygame.display.set_caption(iot_caption)
+def IotInit():
+	global DISPLAYSURF
+	pygame.init()
+	IotSetCaption("IoT Sokoban")
+	DISPLAYSURF = pygame.display.set_mode((displayX, displayY), 0, 32)
+	IotLoadMap()
+
+###################### Function     ###################### 
+########################################################## 
+IotInit()
+while True:
 	IotDraw()
 	pygame.display.update()
 
@@ -115,11 +127,9 @@ while True: # the main game loop
 		for iStage in range(tileY):
 			iot_Map.append(iot_Stage[stage_Num][iStage][:])
 		iot_Count = 0
-		iot_caption = "iotsokoban [stage:%d][Count:%d]" % (stage_Num+1, iot_Count)
+		IotSetCaption("iotsokoban [stage:%d][Count:%d]" % (stage_Num+1, iot_Count))
 		continue
 		
-#raw_input()		
-
 	for event in pygame.event.get():
 		if event.type == pygame.KEYDOWN:
 			TempX = manx
@@ -140,16 +150,17 @@ while True: # the main game loop
 			elif event.key == pygame.K_r:
 				iot_Map = []
 				iot_Count = 0
-				iot_caption = "iotsokoban [stage:%d][Count:%d]" % (stage_Num+1, iot_Count)
+				IotSetCaption("iotsokoban [stage:%d][Count:%d]" % (stage_Num+1, iot_Count))
 				for iStage in range(tileY):
 					iot_Map.append(iot_Stage[stage_Num][iStage][:])
 				break
 			else: 
 				continue
-#if ' ' == iot_Map[many][manx]or'.' == iot_Map[many][manx]:
 			if '#' != iot_Map[many][manx]:
 				if 'B' == iot_Map[many][manx]:
-					if ' ' == iot_Map[2*many-TempY][2*manx-TempX]or'.' == iot_Map[2*many-TempY][2*manx-TempX]:
+					if ' ' == iot_Map[2*many-TempY][2*manx-TempX]:
+						iot_Map[2*many-TempY][2*manx-TempX] = 'B'
+					elif '.' == iot_Map[2*many-TempY][2*manx-TempX]:
 						iot_Map[2*many-TempY][2*manx-TempX] = 'B'
 					else:
 						many = TempY
@@ -161,7 +172,7 @@ while True: # the main game loop
 					iot_Map[TempY][TempX] = ' '
 				iot_Map[many][manx] = '@'
 				iot_Count = iot_Count + 1
-				iot_caption = "iotsokoban [stage:%d][Count:%d]" % (stage_Num+1, iot_Count)
+				IotSetCaption("iotsokoban [stage:%d][Count:%d]" % (stage_Num+1, iot_Count))
 			else:
 				many = TempY
 				manx = TempX
